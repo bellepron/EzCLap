@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Simit : MonoBehaviour, IInteractable
+public class Boat : MonoBehaviour, IInteractable
 {
     public void Interact()
     {

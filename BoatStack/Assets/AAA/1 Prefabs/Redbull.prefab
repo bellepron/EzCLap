@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 6348555127927468745}
   - component: {fileID: 7751392774377314383}
+  - component: {fileID: 4611408677583542614}
   - component: {fileID: 5987054664659727726}
   - component: {fileID: 5862575934797512644}
-  - component: {fileID: 4611408677583542614}
   m_Layer: 0
   m_Name: Redbull
   m_TagString: Untagged
@@ -42,6 +42,18 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3624697350618919830}
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &4611408677583542614
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3624697350618919830}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75f97d8f73779404a80fac32ad7dd771, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!23 &5987054664659727726
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -97,15 +109,3 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
---- !u!114 &4611408677583542614
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3624697350618919830}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 75f97d8f73779404a80fac32ad7dd771, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
