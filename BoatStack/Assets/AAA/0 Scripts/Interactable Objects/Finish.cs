@@ -2,13 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Finish : MonoBehaviour, IInteractable
+public class Finish : MonoBehaviour//, IInteractable
 {
-    [SerializeField] BoxCollider boxCollider;
+    // [SerializeField] BoxCollider boxCollider;
 
-    public void Interact()
-    {
-        boxCollider.enabled = false;
-        Player.Instance.Win();
-    }
+    // public void Interact()
+    // {
+    //     boxCollider.enabled = false;
+    //     Player.Instance.Win();
+    // }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using PathCreation;
 
-public class Follower : MonoBehaviour, ILevelStartObserver
+public class Follower : MonoBehaviour, ILevelStartObserver, IWinObserver, ILoseObserver
 {
     public static Follower Instance;
 
@@ -14,13 +14,14 @@ public class Follower : MonoBehaviour, ILevelStartObserver
 
     void Awake()
     {
-        if (Instance == null)
-            Instance = this;
+        Instance = this;
     }
 
     private void Start()
     {
         Observers.Instance.Add_LevelStartObserver(this);
+        Observers.Instance.Add_WinObserver(this);
+        Observers.Instance.Add_LoseObserver(this);
     }
 
     public void LevelStart()
@@ -42,5 +43,20 @@ public class Follower : MonoBehaviour, ILevelStartObserver
         distanceTravelled += speed * Time.deltaTime;
         transform.position = pathCreator.path.GetPointAtDistance(distanceTravelled);
         transform.rotation = pathCreator.path.GetRotationAtDistance(distanceTravelled);
+    }
+
+    public void WinScenario()
+    {
+        Stop();
+    }
+
+    public void LoseScenario()
+    {
+        Stop();
+    }
+
+    void Stop()
+    {
+        speed = 0;
     }
 }

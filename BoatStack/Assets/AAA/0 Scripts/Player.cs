@@ -14,6 +14,8 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver
     public GameObject character;
     [HideInInspector] public Animator characterAnim;
 
+    int k;
+
     void Awake()
     {
         Instance = this;
@@ -37,7 +39,7 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver
 
     void Update()
     {
-        // Rotation();
+        Rotation();
         // SetPosition();
     }
 
@@ -61,11 +63,10 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver
 
     void Rotation()
     {
-        // boats[boats.Count - 1].transform.LookAt(transform.parent.transform.position + new Vector3(0, 5, 0));
         for (int i = 0; i < boats.Count; i++)
         {
-            boats[i].transform.LookAt(transform.parent.transform.position + new Vector3(0, 5 + boats.Count - i, 0));
-
+            boats[i].transform.LookAt(transform.parent.transform.position);
+            boats[i].transform.localEulerAngles += new Vector3(90, -180, 0);
         }
     }
 
@@ -88,36 +89,45 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver
     // Obstacle
     public void Obstacle(int value)
     {
-        if (boats.Count - value <= 0)
-        {
-            Lose();
-
-            return;
-        }
-
         while (value > 0)
         {
-            boats[0].transform.parent = null;
-            boats[0].transform.position = boats[1].transform.localPosition + new Vector3(0, -1, 0); // What a pity!
+            BoatExplode(boats[0]);
+
             Sequence seq = DOTween.Sequence();
             for (int i = 1; i < boats.Count; i++)
             {
                 seq.Join(boats[i].transform.DOLocalMove(pos_s[i - 1].localPosition, 0.3f));
             }
-            // boats[0].GetComponent<Rigidbody>().isKinematic = true;
             boats.RemoveAt(0);
 
             if (value > 1)
                 seq.Kill();
 
             value--;
+
+            if (boats.Count <= 0)
+                Lose();
         }
+    }
+
+    void BoatExplode(GameObject go)
+    {
+        for (int i = 0; i < go.transform.childCount; i++)
+        {
+            GameObject part = go.transform.GetChild(i).gameObject;
+            Rigidbody rb = part.AddComponent<Rigidbody>();
+            part.AddComponent<BoxCollider>();
+
+            // Vector3 direction = (part.transform.position - go.transform.position).normalized;
+            rb.AddExplosionForce(15, go.transform.position, 5, 1, ForceMode.Impulse);
+        }
+        go.transform.parent = null;
     }
 
     // Jump
     public void Jump()
     {
-        for (int i = 0; i < pos_s.Count; i++)
+        for (int i = 0; i < 14; i++) // pos_s.Count = 14
         {
             pos_s[i].transform.localPosition += new Vector3(0, 0.1f * i, 0);
         }
@@ -141,6 +151,34 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver
         characterAnim.SetTrigger("happy");
     }
 
+    public void Multiplier()
+    {
+        k++;
+
+        if (boats.Count - k > 0)
+        {
+            boats[boats.Count - k].transform.parent = null;
+        }
+        if (boats.Count - k == 0)
+        {
+            boats[0].transform.parent = null;
+            boats[0] = character;
+            GetComponent<Rigidbody>().detectCollisions = false;
+            Follower.Instance.speed = 0;
+            characterAnim.SetTrigger("walk");
+            StartCoroutine(CharacterDelay());
+        }
+    }
+
+    IEnumerator CharacterDelay()
+    {
+        yield return new WaitForSeconds(1);
+        characterAnim.SetTrigger("turn");
+
+        yield return new WaitForSeconds(1);
+        Win();
+    }
+
     // Win
     public void Win()
     {
@@ -150,6 +188,7 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver
     // Lose
     public void Lose()
     {
+        // character.TODO: ragdoll
         Observers.Instance.Notify_LoseObservers();
     }
 
@@ -157,16 +196,6 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver
     {
         // stickman ragdoll
         Debug.Log("LOSER");
-
-        // for (int i = 1; i < boats.Count; i++)
-        // {
-        //     boats[i].transform.parent = null;
-        //     boats[i].GetComponent<Rigidbody>().useGravity = true;
-        //     boats[i].GetComponent<Rigidbody>().AddForce(new Vector3(Random.Range(-3, 3), Random.Range(1, 3), Random.Range(-1, 1)) * 15, ForceMode.Impulse);
-        // }
-        // boats[0].GetComponent<Rigidbody>().isKinematic = true;
-        // boats.RemoveAt(0);
-
     }
 
     public void WinScenario()

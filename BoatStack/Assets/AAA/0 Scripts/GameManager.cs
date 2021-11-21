@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class GameManager : MonoBehaviour
+public class GameManager : MonoBehaviour, IWinObserver, ILoseObserver
 {
     [SerializeField] TextMeshProUGUI levelTMP;
     [SerializeField] GameObject startPanel;
@@ -25,6 +25,8 @@ public class GameManager : MonoBehaviour
         failPanel.SetActive(false);
 
         StartCoroutine(CheckSwipe());
+        Observers.Instance.Add_WinObserver(this);
+        Observers.Instance.Add_LoseObserver(this);
     }
 
     public void StartPanel()
@@ -56,5 +58,15 @@ public class GameManager : MonoBehaviour
                 StartPanel();
             }
         }
+    }
+
+    public void WinScenario()
+    {
+        succesPanel.SetActive(true);
+    }
+
+    public void LoseScenario()
+    {
+        failPanel.SetActive(true);
     }
 }
