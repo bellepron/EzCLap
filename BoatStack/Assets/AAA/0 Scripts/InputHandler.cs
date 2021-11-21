@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InputHandler : MonoBehaviour
+public class InputHandler : MonoBehaviour, ILevelStartObserver
 {
     public static InputHandler Instance;
 
@@ -18,7 +18,6 @@ public class InputHandler : MonoBehaviour
     bool pressed = false;
 
     Transform playerHolderT;
-    public float speed = 20;
     [SerializeField] float bound_Angle = 15f;
 
 
@@ -32,25 +31,26 @@ public class InputHandler : MonoBehaviour
 
     private void Start()
     {
+        Observers.Instance.Add_LevelStartObserver(this);
         playerHolderT = GameObject.FindWithTag("Player Holder").transform;
     }
 
-    private void Update()
+    public void LevelStart()
     {
-        Control();
+        StartCoroutine(MyUpdate());
     }
 
-    // public IEnumerator MyUpdate()
-    // {
-    //     while (true)
-    //     {
-    //         Control();
+    public IEnumerator MyUpdate()
+    {
+        yield return null;
 
-    //         transform.position = player.transform.position;
+        while (true)
+        {
+            Control();
 
-    //         yield return null;
-    //     }
-    // }
+            yield return null;
+        }
+    }
 
     #region Control
 
@@ -76,10 +76,6 @@ public class InputHandler : MonoBehaviour
 
             AngleChange();
         }
-        else
-        {
-
-        }
     }
 
     void AngleChange()
@@ -96,6 +92,5 @@ public class InputHandler : MonoBehaviour
             if (angle > -bound_Angle)
                 playerHolderT.localEulerAngles += new Vector3(0, 0, -90 * Time.deltaTime);
     }
-
     #endregion
 }

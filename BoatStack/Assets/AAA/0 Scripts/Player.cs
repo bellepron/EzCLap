@@ -13,7 +13,6 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver
 
     public GameObject character;
     [HideInInspector] public Animator characterAnim;
-    [SerializeField] GameObject stickmanSpine;
 
     void Awake()
     {
@@ -31,11 +30,6 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver
         for (int i = 0; i < pos_s.Count; i++)
         {
             pos_sInit.Add(pos_s[i].localPosition);
-        }
-
-        if (stickmanSpine != null)
-        {
-            stickmanSpine.AddComponent<CharacterBalance>();
         }
 
         characterAnim = character.GetComponent<Animator>();
