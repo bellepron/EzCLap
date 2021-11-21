@@ -16,8 +16,10 @@ public class InputHandler : MonoBehaviour
     Vector2 secondPressPos;
     Vector2 currentSwipe;
     bool pressed = false;
+
+    Transform playerHolderT;
     public float speed = 20;
-    [SerializeField] float bound_X = 1.5f;
+    [SerializeField] float bound_Angle = 15f;
 
 
     void Awake()
@@ -30,7 +32,7 @@ public class InputHandler : MonoBehaviour
 
     private void Start()
     {
-
+        playerHolderT = GameObject.FindWithTag("Player Holder").transform;
     }
 
     private void Update()
@@ -72,36 +74,27 @@ public class InputHandler : MonoBehaviour
             currentSwipe = new Vector3(secondPressPos.x - firstPressPos.x, 0);
             currentSwipe.Normalize();
 
-            // Vector3 direction = player.transform.forward + new Vector3(currentSwipe.x, 0f, 0f);
-
-            // float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
-            // Quaternion newRot = Quaternion.Euler(0, targetAngle, 0);
-            // player.transform.rotation = newRot;
-
-            // anim.SetBool("isWalking", true);
-            // player.transform.position += player.transform.forward * speed * Time.deltaTime;
-
-
-            // if (secondPressPos.x - firstPressPos.x > 0)
-            //     if (player.transform.localPosition.x <= bound_X)
-            //         player.transform.position += player.transform.right * speed * Time.deltaTime;
-
-            // if (secondPressPos.x - firstPressPos.x < 0)
-            //     if (player.transform.localPosition.x >= -bound_X)
-            //         player.transform.position -= player.transform.right * speed * Time.deltaTime;
-
-            if (secondPressPos.x - firstPressPos.x > 0)
-                if (player.transform.parent.transform.localEulerAngles.z < 90 + 30)
-                    player.transform.parent.transform.localEulerAngles += new Vector3(0, 0, 90 * Time.deltaTime);
-
-            if (secondPressPos.x - firstPressPos.x < 0)
-                if (player.transform.parent.transform.localEulerAngles.z > 90 - 30)
-                    player.transform.parent.transform.localEulerAngles -= new Vector3(0, 0, 90 * Time.deltaTime);
+            AngleChange();
         }
         else
         {
-            // anim.SetBool("isWalking", false);
+
         }
+    }
+
+    void AngleChange()
+    {
+        float angle = playerHolderT.localEulerAngles.z;
+        if (angle > 270)
+            angle = angle - 360;
+
+        if (secondPressPos.x - firstPressPos.x > 0)
+            if (angle < bound_Angle)
+                playerHolderT.localEulerAngles += new Vector3(0, 0, 90 * Time.deltaTime);
+
+        if (secondPressPos.x - firstPressPos.x < 0)
+            if (angle > -bound_Angle)
+                playerHolderT.localEulerAngles += new Vector3(0, 0, -90 * Time.deltaTime);
     }
 
     #endregion
