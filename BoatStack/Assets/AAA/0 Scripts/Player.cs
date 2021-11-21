@@ -11,7 +11,8 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver
     [SerializeField] List<Transform> pos_s;
     List<Vector3> pos_sInit = new List<Vector3>();
 
-    public GameObject stickman;
+    public GameObject character;
+    [HideInInspector] public Animator characterAnim;
     [SerializeField] GameObject stickmanSpine;
 
     void Awake()
@@ -23,8 +24,6 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver
     {
         Observers.Instance.Add_LoseObserver(this);
         Observers.Instance.Add_WinObserver(this);
-
-        stickman = InputHandler.Instance.player.transform.GetChild(0).GetChild(0).gameObject;
 
         boats.Add(InputHandler.Instance.player.transform.GetChild(0).gameObject);
         boats[0].transform.localPosition = pos_s[0].localPosition;
@@ -38,6 +37,8 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver
         {
             stickmanSpine.AddComponent<CharacterBalance>();
         }
+
+        characterAnim = character.GetComponent<Animator>();
     }
 
     void Update()
@@ -139,6 +140,11 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver
         {
             boats[i].transform.DOLocalMove(pos_sInit[i], 1);
         }
+    }
+
+    public void MakeCharacterHappy()
+    {
+        characterAnim.SetTrigger("happy");
     }
 
     // Win
