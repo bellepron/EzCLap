@@ -79,11 +79,32 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver
         }
 
         boats.Insert(0, go);
+        BoingEffect();
 
         go.GetComponent<BoxCollider>().isTrigger = false;
         go.transform.parent = InputHandler.Instance.player.transform;
+        go.transform.localEulerAngles = boats[1].transform.localEulerAngles;
         go.transform.DOLocalMove(pos_s[0].localPosition, 0.3f);
         go.GetComponent<BoxCollider>().enabled = false;
+    }
+    void BoingEffect()
+    {
+        float d = 0.0f;
+        // for (int i = boats.Count - 1; i >= 0; i--)
+        // {
+        //     StartCoroutine(BoingDelay(boats[i], d));
+        //     d += 0.1f;
+        // }
+        for (int i = 0; i < boats.Count; i++)
+        {
+            StartCoroutine(BoingDelay(boats[i], d));
+            d += 0.1f;
+        }
+    }
+    IEnumerator BoingDelay(GameObject boat, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        boat.transform.DOScale(Vector3.one * 1.2f, 0.2f).OnComplete(() => boat.transform.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutBounce));
     }
 
     // Obstacle
@@ -119,7 +140,7 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver
             part.AddComponent<BoxCollider>();
 
             // Vector3 direction = (part.transform.position - go.transform.position).normalized;
-            rb.AddExplosionForce(15, go.transform.position, 5, 1, ForceMode.Impulse);
+            rb.AddExplosionForce(15, go.transform.position - new Vector3(0, 2f, 0), 3, 1, ForceMode.Impulse);
         }
         go.transform.parent = null;
     }
@@ -153,21 +174,20 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver
 
     public void Multiplier()
     {
-        k++;
-
-        if (boats.Count - k > 0)
+        if (k < boats.Count - 1)
         {
-            boats[boats.Count - k].transform.parent = null;
+            boats[k].transform.parent = null;
         }
-        if (boats.Count - k == 0)
+        if (k == boats.Count)
         {
-            boats[0].transform.parent = null;
-            boats[0] = character;
+            boats[boats.Count - 1].transform.parent = null;
+            boats[boats.Count - 1] = character;
             GetComponent<Rigidbody>().detectCollisions = false;
             Follower.Instance.speed = 0;
             characterAnim.SetTrigger("walk");
             StartCoroutine(CharacterDelay());
         }
+        k++;
     }
 
     IEnumerator CharacterDelay()
