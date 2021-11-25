@@ -39,7 +39,7 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver
 
     void Update()
     {
-        // Rotation();
+        Rotation();
         // SetPosition();
     }
 
@@ -52,21 +52,23 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver
         }
     }
 
-    void SetPosition()
-    {
-        boats[boats.Count - 1].transform.localPosition = transform.position;
-        for (int i = 0; i < boats.Count; i++)
-        {
-            boats[i].transform.localPosition = Vector3.MoveTowards(boats[i].transform.localPosition, pos_s[boats.Count - 1 - i].localPosition, 3 * Time.deltaTime);
-        }
-    }
-
+    // void SetPosition()
+    // {
+    //     boats[boats.Count - 1].transform.localPosition = transform.position;
+    //     for (int i = 0; i < boats.Count; i++)
+    //     {
+    //         boats[i].transform.localPosition = Vector3.MoveTowards(boats[i].transform.localPosition, pos_s[boats.Count - 1 - i].localPosition, 3 * Time.deltaTime);
+    //     }
+    // }
+    Transform playerHolderT;
     void Rotation()
     {
-        for (int i = 0; i < boats.Count; i++)
+        playerHolderT = GameObject.FindWithTag("Player Holder").transform;
+        boats[0].transform.LookAt(transform.parent.transform.position);
+        boats[0].transform.localEulerAngles += new Vector3(90, -180, 0);
+        for (int i = 1; i < pos_s.Count; i++)
         {
-            boats[i].transform.LookAt(transform.parent.transform.position);
-            boats[i].transform.localEulerAngles += new Vector3(90, -180, 0);
+            pos_s[i].transform.parent.transform.localEulerAngles = playerHolderT.transform.localEulerAngles;
         }
     }
 
@@ -76,13 +78,16 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver
         for (int i = 0; i < boats.Count; i++)
         {
             boats[i].transform.DOLocalMove(pos_s[i + 1].localPosition, 0.3f);
+            boats[i].transform.parent = pos_s[i + 1].transform;
         }
 
         boats.Insert(0, go);
         BoingEffect();
 
         go.GetComponent<BoxCollider>().isTrigger = false;
+        // go.transform.parent = InputHandler.Instance.player.transform;
         go.transform.parent = InputHandler.Instance.player.transform;
+        // boats[1].transform.parent = InputHandler.Instance.player.transform.parent.transform.parent.transform.GetChild(1).transform;
         go.transform.localEulerAngles = boats[1].transform.localEulerAngles;
         go.transform.DOLocalMove(pos_s[0].localPosition, 0.3f);
         go.GetComponent<BoxCollider>().enabled = false;
@@ -118,6 +123,7 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver
             for (int i = 1; i < boats.Count; i++)
             {
                 seq.Join(boats[i].transform.DOLocalMove(pos_s[i - 1].localPosition, 0.3f));
+                boats[i].transform.parent = pos_s[i - 1].transform;
             }
             boats.RemoveAt(0);
 
