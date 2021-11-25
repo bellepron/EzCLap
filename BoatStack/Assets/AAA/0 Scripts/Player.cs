@@ -107,15 +107,12 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver
         boat.transform.DOScale(Vector3.one * 1.2f, 0.2f).OnComplete(() => boat.transform.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutBounce));
     }
 
-    // Obstacle
+    #region Obstacle Interact
     public void Obstacle(int value)
     {
         while (value > 0)
         {
-            if (boats.Count > 1)
-                BoatExplode(boats[0], boats[0].transform.childCount);
-            else
-                BoatExplode(boats[0], boats[0].transform.childCount - 1);
+            BoatExplode(boats[0], BoatChildCount());
 
             Sequence seq = DOTween.Sequence();
             for (int i = 1; i < boats.Count; i++)
@@ -133,11 +130,19 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver
             {
                 value = 0;
                 seq.Kill();
-                Debug.Log("1234567890");
                 Lose();
                 return;
             }
         }
+
+
+    }
+    int BoatChildCount()
+    {
+        if (boats.Count > 1)
+            return boats[0].transform.childCount;
+        else
+            return boats[0].transform.childCount - 1;
     }
 
     void BoatExplode(GameObject go, int childCount)
@@ -153,6 +158,9 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver
         }
         go.transform.parent = null;
     }
+
+    #endregion
+
 
     // Jump
     public void Jump()
@@ -217,7 +225,6 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver
     // Lose
     public void Lose()
     {
-        // character.TODO: ragdoll
         Observers.Instance.Notify_LoseObservers();
     }
 
