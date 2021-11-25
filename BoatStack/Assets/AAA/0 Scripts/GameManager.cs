@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour, IWinObserver, ILoseObserver
 {
@@ -58,6 +59,11 @@ public class GameManager : MonoBehaviour, IWinObserver, ILoseObserver
                 StartPanel();
             }
         }
+    }
+
+    public void FailPanel()
+    {
+        SceneManager.LoadScene(0);
     }
 
     public void WinScenario()
