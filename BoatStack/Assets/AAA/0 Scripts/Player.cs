@@ -39,7 +39,7 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver
 
     void Update()
     {
-        Rotation();
+        // Rotation();
         // SetPosition();
     }
 
@@ -98,7 +98,7 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver
         for (int i = 0; i < boats.Count; i++)
         {
             StartCoroutine(BoingDelay(boats[i], d));
-            d += 0.1f;
+            d += 0.05f;
         }
     }
     IEnumerator BoingDelay(GameObject boat, float delay)
@@ -112,7 +112,10 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver
     {
         while (value > 0)
         {
-            BoatExplode(boats[0]);
+            if (boats.Count > 1)
+                BoatExplode(boats[0], boats[0].transform.childCount);
+            else
+                BoatExplode(boats[0], boats[0].transform.childCount - 1);
 
             Sequence seq = DOTween.Sequence();
             for (int i = 1; i < boats.Count; i++)
@@ -127,19 +130,25 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver
             value--;
 
             if (boats.Count <= 0)
+            {
+                value = 0;
+                seq.Kill();
+                Debug.Log("1234567890");
                 Lose();
+                return;
+            }
         }
     }
 
-    void BoatExplode(GameObject go)
+    void BoatExplode(GameObject go, int childCount)
     {
-        for (int i = 0; i < go.transform.childCount; i++)
+
+        for (int i = 0; i < childCount; i++)
         {
             GameObject part = go.transform.GetChild(i).gameObject;
             Rigidbody rb = part.AddComponent<Rigidbody>();
             part.AddComponent<BoxCollider>();
 
-            // Vector3 direction = (part.transform.position - go.transform.position).normalized;
             rb.AddExplosionForce(15, go.transform.position - new Vector3(0, 2f, 0), 3, 1, ForceMode.Impulse);
         }
         go.transform.parent = null;
@@ -195,12 +204,12 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver
         yield return new WaitForSeconds(1);
         characterAnim.SetTrigger("turn");
 
-        yield return new WaitForSeconds(1);
-        Win();
+        // yield return new WaitForSeconds(1);
+        // PathEnd();
     }
 
     // Win
-    public void Win()
+    public void PathEnd()
     {
         Observers.Instance.Notify_WinObservers();
     }
@@ -214,12 +223,12 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver
 
     public void LoseScenario()
     {
-        // stickman ragdoll
+        character.GetComponent<RagdollToggle>().RagdollActivate(true);
         Debug.Log("LOSER");
     }
 
     public void WinScenario()
     {
-        Debug.Log("WINNER");
+        Debug.Log("Path End.");
     }
 }

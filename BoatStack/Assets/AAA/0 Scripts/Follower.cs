@@ -58,5 +58,9 @@ public class Follower : MonoBehaviour, ILevelStartObserver, IWinObserver, ILoseO
     void Stop()
     {
         speed = 0;
+        Observers.Instance.Remove_LevelStartObserver(this);
+        Observers.Instance.Remove_WinObserver(this);
+        Observers.Instance.Remove_LoseObserver(this);
+        this.enabled = false;
     }
 }

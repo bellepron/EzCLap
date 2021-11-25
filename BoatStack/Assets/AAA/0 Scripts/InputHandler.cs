@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
-public class InputHandler : MonoBehaviour, ILevelStartObserver
+public class InputHandler : MonoBehaviour, ILevelStartObserver, IWinObserver, ILoseObserver, ILevelEndObserver
 {
     public static InputHandler Instance;
 
@@ -20,6 +21,8 @@ public class InputHandler : MonoBehaviour, ILevelStartObserver
     Transform playerHolderT;
     [SerializeField] float bound_Angle = 15f;
 
+    bool isUpdating = true;
+
 
     void Awake()
     {
@@ -32,6 +35,10 @@ public class InputHandler : MonoBehaviour, ILevelStartObserver
     private void Start()
     {
         Observers.Instance.Add_LevelStartObserver(this);
+        Observers.Instance.Add_WinObserver(this);
+        Observers.Instance.Add_LoseObserver(this);
+        Observers.Instance.Add_LevelEndObserver(this);
+
         playerHolderT = GameObject.FindWithTag("Player Holder").transform;
     }
 
@@ -44,7 +51,7 @@ public class InputHandler : MonoBehaviour, ILevelStartObserver
     {
         yield return null;
 
-        while (true)
+        while (isUpdating)
         {
             Control();
 
@@ -92,5 +99,32 @@ public class InputHandler : MonoBehaviour, ILevelStartObserver
             if (angle > -bound_Angle)
                 playerHolderT.localEulerAngles += new Vector3(0, 0, -90 * Time.deltaTime);
     }
+
     #endregion
+
+    void AngleReset()
+    {
+        playerHolderT.DOLocalRotate(Vector3.zero, 1, RotateMode.Fast);
+    }
+
+    public void WinScenario()
+    {
+        AngleReset();
+        Stop();
+    }
+
+    public void LoseScenario()
+    {
+        Stop();
+    }
+
+    public void LevelEnd()
+    {
+        
+    }
+
+    void Stop()
+    {
+        isUpdating = false;
+    }
 }
