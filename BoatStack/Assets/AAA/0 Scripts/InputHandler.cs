@@ -22,6 +22,7 @@ public class InputHandler : MonoBehaviour, ILevelStartObserver, IWinObserver, IL
     [SerializeField] float bound_Angle = 15f;
 
     bool isUpdating = true;
+    bool goForward = true;
 
 
     void Awake()
@@ -111,6 +112,16 @@ public class InputHandler : MonoBehaviour, ILevelStartObserver, IWinObserver, IL
     {
         AngleReset();
         Stop();
+        StartCoroutine(GoForward());
+    }
+    IEnumerator GoForward()
+    {
+        while (goForward)
+        {
+            // player.transform.Translate(player.transform.forward * 10 * Time.deltaTime, Space.World);
+            player.transform.position += new Vector3(player.transform.forward.x, 0, player.transform.forward.z) * 10 * Time.deltaTime;
+            yield return null;
+        }
     }
 
     public void LoseScenario()
@@ -120,7 +131,7 @@ public class InputHandler : MonoBehaviour, ILevelStartObserver, IWinObserver, IL
 
     public void LevelEnd()
     {
-        
+        goForward = false;
     }
 
     void Stop()

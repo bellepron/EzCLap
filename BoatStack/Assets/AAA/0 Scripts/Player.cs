@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
-public class Player : MonoBehaviour, ILoseObserver, IWinObserver
+public class Player : MonoBehaviour, ILoseObserver, IWinObserver, ILevelEndObserver
 {
     public static Player Instance;
 
@@ -25,6 +25,7 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver
     {
         Observers.Instance.Add_LoseObserver(this);
         Observers.Instance.Add_WinObserver(this);
+        Observers.Instance.Add_LevelEndObserver(this);
 
         boats.Add(InputHandler.Instance.player.transform.GetChild(0).gameObject);
         boats[0].transform.localPosition = pos_s[0].localPosition;
@@ -39,7 +40,7 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver
 
     void Update()
     {
-        Rotation();
+        // Rotation();
         // SetPosition();
     }
 
@@ -85,9 +86,7 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver
         BoingEffect();
 
         go.GetComponent<BoxCollider>().isTrigger = false;
-        // go.transform.parent = InputHandler.Instance.player.transform;
         go.transform.parent = InputHandler.Instance.player.transform;
-        // boats[1].transform.parent = InputHandler.Instance.player.transform.parent.transform.parent.transform.GetChild(1).transform;
         go.transform.localEulerAngles = boats[1].transform.localEulerAngles;
         go.transform.DOLocalMove(pos_s[0].localPosition, 0.3f);
         go.GetComponent<BoxCollider>().enabled = false;
@@ -134,8 +133,8 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver
 
             if (boats.Count <= 0)
             {
-                value = 0;
-                seq.Kill();
+                // value = 0;
+                // seq.Kill();
                 Lose();
                 return;
             }
@@ -201,25 +200,17 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver
         {
             boats[k].transform.parent = null;
         }
-        if (k == boats.Count)
+        else if (k == boats.Count - 1)
         {
-            boats[boats.Count - 1].transform.parent = null;
-            boats[boats.Count - 1] = character;
+            boats[k].transform.parent = null;
+            character.transform.parent = null;
             GetComponent<Rigidbody>().detectCollisions = false;
-            Follower.Instance.speed = 0;
-            characterAnim.SetTrigger("walk");
-            StartCoroutine(CharacterDelay());
+
+            Observers.Instance.Notify_LevelEndObservers();
         }
+        else
+        { Debug.Log("bok"); }
         k++;
-    }
-
-    IEnumerator CharacterDelay()
-    {
-        yield return new WaitForSeconds(1);
-        characterAnim.SetTrigger("turn");
-
-        // yield return new WaitForSeconds(1);
-        // PathEnd();
     }
 
     // Win
@@ -243,5 +234,18 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver
     public void WinScenario()
     {
         Debug.Log("Path End.");
+    }
+
+    public void LevelEnd()
+    {
+        characterAnim.SetTrigger("walk");
+        character.transform.DOMove(character.transform.position + new Vector3(0, 0.6f, 0), 0.2f);
+        character.transform.DOMove(character.transform.position + new Vector3(0, 0.6f, 0) + character.transform.forward * 3, 0.8f);
+        DOVirtual.DelayedCall(0.8f, CharacterTurnDelay);
+    }
+
+    void CharacterTurnDelay()
+    {
+        characterAnim.SetTrigger("turn");
     }
 }
