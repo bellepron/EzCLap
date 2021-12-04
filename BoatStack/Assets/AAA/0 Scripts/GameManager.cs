@@ -17,13 +17,18 @@ public class GameManager : MonoBehaviour, IWinObserver, ILoseObserver
     Vector2 currentSwipe;
     bool isSwiped;
 
+    // Level System
+    int levelIndex;
 
     void Start()
     {
+        levelIndex = PlayerPrefs.GetInt("level");
+
         levelTMP.enabled = true;
         startPanel.SetActive(true);
         succesPanel.SetActive(false);
         failPanel.SetActive(false);
+        levelTMP.text = "LEVEL " + (levelIndex + 1).ToString();
 
         StartCoroutine(CheckSwipe());
         Observers.Instance.Add_WinObserver(this);
@@ -65,10 +70,17 @@ public class GameManager : MonoBehaviour, IWinObserver, ILoseObserver
     {
         SceneManager.LoadScene(0);
     }
+    public void SuccessPanel()
+    {
+        SceneManager.LoadScene(0);
+    }
 
     public void WinScenario()
     {
         succesPanel.SetActive(true);
+
+        levelIndex++;
+        PlayerPrefs.SetInt("level", levelIndex);
     }
 
     public void LoseScenario()
