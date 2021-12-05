@@ -94,11 +94,7 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver, ILevelEndObser
     void BoingEffect()
     {
         float d = 0.0f;
-        // for (int i = boats.Count - 1; i >= 0; i--)
-        // {
-        //     StartCoroutine(BoingDelay(boats[i], d));
-        //     d += 0.1f;
-        // }
+
         for (int i = 0; i < boats.Count; i++)
         {
             StartCoroutine(BoingDelay(boats[i], d));
@@ -196,6 +192,8 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver, ILevelEndObser
 
     public void Multiplier()
     {
+        PointCalculator.Instance.MultiplierText();
+
         if (k < boats.Count - 1)
         {
             boats[k].transform.parent = null;
@@ -204,13 +202,67 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver, ILevelEndObser
         {
             boats[k].transform.parent = null;
             character.transform.parent = null;
+            character.transform.eulerAngles = new Vector3(0, 90, 0);
             GetComponent<Rigidbody>().detectCollisions = false;
+            DOVirtual.DelayedCall(0.1f, StayOnGround);
 
             Observers.Instance.Notify_LevelEndObservers();
         }
-        else
-        { Debug.Log("bok"); }
         k++;
+    }
+    void StayOnGround()
+    {
+        Rigidbody charRb = character.GetComponent<Rigidbody>();
+        charRb.useGravity = true;
+        charRb.constraints &= ~RigidbodyConstraints.FreezePositionY;
+        character.GetComponent<CapsuleCollider>().isTrigger = false;
+    }
+
+    public void LastStep()
+    {
+        InputHandler.Instance.LevelEnd();
+
+        StartCoroutine(WinWithExtraBoat());
+    }
+    IEnumerator WinWithExtraBoat()
+    {
+        bool a = true;
+        int tempK = k;
+        CameraManager.Instance.Cam2_Cam3();
+        while (a)
+        {
+            if (k < boats.Count)
+            {
+                PointCalculator.Instance.MultiplierText();
+                BoatExplode(boats[k], BoatChildCount());
+
+                for (int i = k; i < boats.Count; i++)
+                {
+                    // boats[i].transform.DOLocalMove(pos_s[i - 1].localPosition + new Vector3(0, -1.5f, 0), 0.1f);
+                    boats[i].transform.DOMove(boats[i].transform.position + new Vector3(0, -0.4f, 0), 0.2f);
+                }
+
+                // if (k < boats.Count - 1)
+                //     seq.Kill();
+
+
+                if (k == boats.Count - 1)
+                {
+                    boats[k].transform.parent = null;
+                    character.transform.parent = null;
+                    character.transform.eulerAngles = new Vector3(0, 90, 0);
+                    GetComponent<Rigidbody>().detectCollisions = false;
+                    DOVirtual.DelayedCall(0.1f, StayOnGround);
+
+                    Observers.Instance.Notify_LevelEndObservers();
+
+                    a = false;
+                }
+                k++;
+            }
+
+            yield return new WaitForSeconds(0.3f);
+        }
     }
 
     // Win
@@ -240,7 +292,7 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver, ILevelEndObser
     {
         characterAnim.SetTrigger("walk");
         character.transform.DOMove(character.transform.position + new Vector3(0, 0.6f, 0), 0.2f);
-        character.transform.DOMove(character.transform.position + new Vector3(0, 0.6f, 0) + character.transform.forward * 3, 0.8f);
+        character.transform.DOMove(character.transform.position + new Vector3(0, 0.6f, 0) + new Vector3(1, 0, 0) * 3, 0.8f);
         DOVirtual.DelayedCall(0.8f, CharacterTurnDelay);
     }
 
