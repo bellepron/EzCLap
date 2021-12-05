@@ -4,7 +4,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
 
-public class GameManager : MonoBehaviour, IWinObserver, ILoseObserver
+public class GameManager : MonoBehaviour, IWinObserver, ILoseObserver, ILevelEndObserver
 {
     [SerializeField] TextMeshProUGUI levelTMP;
     [SerializeField] GameObject startPanel;
@@ -18,29 +18,50 @@ public class GameManager : MonoBehaviour, IWinObserver, ILoseObserver
     bool isSwiped;
 
     // Level System
+    [SerializeField] LevelDefinition[] levels;
     int levelIndex;
 
+    #region Game Start Functions
     void Start()
     {
-        levelIndex = PlayerPrefs.GetInt("level");
+        LevelOperations();
+        PreparingPanels();
+        AddObserver();
 
+        StartCoroutine(CheckSwipe());
+    }
+    void LevelOperations()
+    {
+        levelIndex = PlayerPrefs.GetInt("level");
         levelTMP.enabled = true;
+        levelTMP.text = "LEVEL " + (levelIndex + 1).ToString();
+
+        SettingLevelInfo();
+    }
+    void SettingLevelInfo()
+    {
+        int currentIndex = levelIndex % levels.Length;
+        GameObject _level = Instantiate(levels[currentIndex].level, Vector3.zero, Quaternion.identity);
+        Follower.Instance.pathCreator = _level.transform.GetComponentInChildren<PathCreation.PathCreator>();
+        Follower.Instance.speed = levels[currentIndex].speed;
+        InputHandler.Instance.swipeSpeed = levels[currentIndex].swipeSpeed;
+    }
+    void PreparingPanels()
+    {
         startPanel.SetActive(true);
         succesPanel.SetActive(false);
         failPanel.SetActive(false);
-        levelTMP.text = "LEVEL " + (levelIndex + 1).ToString();
-
-        StartCoroutine(CheckSwipe());
+    }
+    void AddObserver()
+    {
         Observers.Instance.Add_WinObserver(this);
         Observers.Instance.Add_LoseObserver(this);
+        Observers.Instance.Add_LevelEndObserver(this);
     }
 
-    public void StartPanel()
-    {
-        isSwiped = true;
-        startPanel.SetActive(false);
-        Observers.Instance.Notify_LevelStartObservers();
-    }
+    #endregion
+
+    #region Level Start Funtions
     IEnumerator CheckSwipe()
     {
         while (isSwiped == false)
@@ -49,7 +70,6 @@ public class GameManager : MonoBehaviour, IWinObserver, ILoseObserver
             yield return null;
         }
     }
-
     void Swipe()
     {
         if (Input.GetMouseButtonDown(0))
@@ -66,6 +86,16 @@ public class GameManager : MonoBehaviour, IWinObserver, ILoseObserver
         }
     }
 
+    public void StartPanel()
+    {
+        isSwiped = true;
+        startPanel.SetActive(false);
+        Observers.Instance.Notify_LevelStartObservers();
+    }
+    #endregion
+
+    #region Buttons
+
     public void FailPanel()
     {
         SceneManager.LoadScene(0);
@@ -75,16 +105,26 @@ public class GameManager : MonoBehaviour, IWinObserver, ILoseObserver
         SceneManager.LoadScene(0);
     }
 
+    #endregion
+
     public void WinScenario()
     {
-        succesPanel.SetActive(true);
 
-        levelIndex++;
-        PlayerPrefs.SetInt("level", levelIndex);
     }
 
     public void LoseScenario()
     {
         failPanel.SetActive(true);
+    }
+
+    public void LevelEnd()
+    {
+        levelIndex++;
+        PlayerPrefs.SetInt("level", levelIndex);
+        Invoke("SuccesPanelActivate", 1);
+    }
+    void SuccesPanelActivate()
+    {
+        succesPanel.SetActive(true);
     }
 }
