@@ -49,8 +49,8 @@ MonoBehaviour:
   - m_From: CM vcam2
     m_To: CM vcam3
     m_Blend:
-      m_Style: 1
-      m_Time: 2
+      m_Style: 6
+      m_Time: 0.58
       m_CustomCurve:
         serializedVersion: 2
         m_Curve: []
