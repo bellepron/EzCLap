@@ -1,17 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using DG.Tweening;
 using TMPro;
 
-public class PointCalculator : MonoBehaviour
+public class PointCalculator : MonoBehaviour, ILevelEndObserver
 {
     public static PointCalculator Instance;
 
     float score;
     [SerializeField] TextMeshProUGUI scoreTMP;
-    float multiplier;
     [SerializeField] TextMeshProUGUI multiplierTMP;
+    int multiplier;
+    [SerializeField] GameObject pointBar;
+    [SerializeField] TextMeshProUGUI totalPointTMP;
+    float totalPoint = 0;
+    [SerializeField] Button nextLevelButton;
 
     [Header("Diamond Collect")]
     float diamondQuantity;
@@ -30,6 +35,9 @@ public class PointCalculator : MonoBehaviour
     void Start()
     {
         diamondTMP.text = diamondQuantity.ToString();
+        multiplierTMP.text = "";
+
+        Observers.Instance.Add_LevelEndObserver(this);
     }
 
     public void AddDiamond()
@@ -52,5 +60,46 @@ public class PointCalculator : MonoBehaviour
         diamondQuantity += 10;
         diamondTMP.text = diamondQuantity.ToString();
         diamond.SetActive(false);
+    }
+
+    public void MultiplierText()
+    {
+        multiplier++;
+        multiplierTMP.text = "X" + multiplier.ToString();
+        multiplierTMP.transform.DOScale(Vector3.one * 1.3f, 0.2f);
+    }
+
+    public void LevelEnd()
+    {
+        Invoke("SuccessPanelDelay", 1);
+    }
+    void SuccessPanelDelay()
+    {
+        pointBar.transform.localScale = Vector3.one * 0.1f;
+        pointBar.transform.DOScale(Vector3.one, 2);
+        Invoke("NextLevelButtonActivate", 2);
+
+        DOTween.To(() => totalPoint, x => totalPoint = x, diamondQuantity * multiplier, 2);
+        StartCoroutine(UpdateTotalPointText());
+    }
+    void NextLevelButtonActivate()
+    {
+        nextLevelButton.interactable = true;
+    }
+    IEnumerator UpdateTotalPointText()
+    {
+        bool a = true;
+        float t = 0;
+        while (a)
+        {
+            totalPointTMP.text = ((int)totalPoint).ToString();
+
+            t += Time.deltaTime;
+            if (t > 2.1f)
+            {
+                a = false;
+            }
+            yield return null;
+        }
     }
 }
