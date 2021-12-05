@@ -20,6 +20,7 @@ public class InputHandler : MonoBehaviour, ILevelStartObserver, IWinObserver, IL
 
     Transform playerHolderT;
     [SerializeField] float bound_Angle = 15f;
+    public float swipeSpeed;
 
     bool isUpdating = true;
     bool goForward = true;
@@ -94,11 +95,11 @@ public class InputHandler : MonoBehaviour, ILevelStartObserver, IWinObserver, IL
 
         if (secondPressPos.x - firstPressPos.x > 0)
             if (angle < bound_Angle)
-                playerHolderT.localEulerAngles += new Vector3(0, 0, 90 * Time.deltaTime);
+                playerHolderT.localEulerAngles += new Vector3(0, 0, swipeSpeed * 10 * Time.deltaTime);
 
         if (secondPressPos.x - firstPressPos.x < 0)
             if (angle > -bound_Angle)
-                playerHolderT.localEulerAngles += new Vector3(0, 0, -90 * Time.deltaTime);
+                playerHolderT.localEulerAngles += new Vector3(0, 0, swipeSpeed * -10 * Time.deltaTime);
     }
 
     #endregion
@@ -118,8 +119,8 @@ public class InputHandler : MonoBehaviour, ILevelStartObserver, IWinObserver, IL
     {
         while (goForward)
         {
-            // player.transform.Translate(player.transform.forward * 10 * Time.deltaTime, Space.World);
-            player.transform.position += new Vector3(player.transform.forward.x, 0, player.transform.forward.z) * 10 * Time.deltaTime;
+            // player.transform.position += new Vector3(player.transform.forward.x, 0, player.transform.forward.z) * 10 * Time.deltaTime;
+            player.transform.position += Vector3.right * 10 * Time.deltaTime;
             yield return null;
         }
     }
