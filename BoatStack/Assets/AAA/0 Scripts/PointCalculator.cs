@@ -12,7 +12,7 @@ public class PointCalculator : MonoBehaviour, ILevelEndObserver
     float score;
     [SerializeField] TextMeshProUGUI scoreTMP;
     [SerializeField] TextMeshProUGUI multiplierTMP;
-    int multiplier;
+    public int multiplier;
     [SerializeField] GameObject pointBar;
     [SerializeField] TextMeshProUGUI totalPointTMP;
     float totalPoint = 0;
