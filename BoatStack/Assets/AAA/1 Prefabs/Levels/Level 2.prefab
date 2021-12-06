@@ -701,7 +701,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 543450651624778546}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Way
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -735,7 +735,7 @@ GameObject:
   - component: {fileID: 4049908501393383695}
   - component: {fileID: 3674548646484119291}
   - component: {fileID: 5694059875875712983}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Plane001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2013,7 +2013,7 @@ GameObject:
   - component: {fileID: 1714938218675910184}
   - component: {fileID: 8835409691763065634}
   - component: {fileID: 8144394004630323237}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Object001
   m_TagString: Untagged
   m_Icon: {fileID: 0}

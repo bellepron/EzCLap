@@ -15,4 +15,4 @@ MonoBehaviour:
   speed: 14
   swipeSpeed: 9
   level: {fileID: 7903001937502576878, guid: a58d40c761e610e458a465f3ab7150a0, type: 3}
-  stairsStepCount: 20
+  stairsStepCount: 2
