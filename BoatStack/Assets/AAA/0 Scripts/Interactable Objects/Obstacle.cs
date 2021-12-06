@@ -8,6 +8,7 @@ public class Obstacle : MonoBehaviour, IInteractable
     public void Interact()
     {
         Player.Instance.Obstacle(height);
-        boxCollider.enabled = false;
+        boxCollider.isTrigger = false;
+        // boxCollider.enabled = false;
     }
 }
