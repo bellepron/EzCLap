@@ -42,6 +42,8 @@ public class PointCalculator : MonoBehaviour, ILevelEndObserver
 
     public void AddDiamond()
     {
+        SoundManager.Instance.Diamond();
+
         GameObject diamond = Instantiate(diamondImagePrefab, diamondInstT.position, Quaternion.identity, canvas.transform) as GameObject;
         DiamondImageMove(diamond);
         StartCoroutine(IncreaseDiamond(diamond));
