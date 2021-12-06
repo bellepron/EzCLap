@@ -246,7 +246,7 @@ public class Player : MonoBehaviour, ILevelStartObserver, IWinObserver, ILoseObs
     IEnumerator WinWithExtraBoat()
     {
         bool a = true;
-        float repeatTime = 0.2f;
+        float repeatTime = 0.15f;
         CameraManager.Instance.Cam2_Cam3();
         while (a)
         {
