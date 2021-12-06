@@ -32,6 +32,7 @@ public class GameManager : MonoBehaviour, IWinObserver, ILoseObserver, ILevelEnd
     }
     void LevelOperations()
     {
+        // PlayerPrefs.SetInt("level", 0);
         levelIndex = PlayerPrefs.GetInt("level");
         levelTMP.enabled = true;
         levelTMP.text = "LEVEL " + (levelIndex + 1).ToString();
