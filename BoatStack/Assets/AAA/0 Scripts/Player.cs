@@ -205,7 +205,7 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver, ILevelEndObser
 
         if (k < boats.Count - 1)
         {
-            boats[k].transform.parent = null;
+            StartCoroutine(Leave(boats[k]));
 
             SoundManager.Instance.BoatDrop();
         }
@@ -222,6 +222,15 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver, ILevelEndObser
             Observers.Instance.Notify_LevelEndObservers();
         }
         k++;
+    }
+    IEnumerator Leave(GameObject boatsK)
+    {
+        yield return new WaitForSeconds(0.23f);
+        boatsK.transform.parent = null;
+        float posY = (PointCalculator.Instance.multiplier - 1) * 0.4f + 0.5f + FindObjectOfType<LevelEndStairs>().transform.position.y;
+        float posX = (PointCalculator.Instance.multiplier - 1) * 3 + 0.43f + FindObjectOfType<LevelEndStairs>().transform.position.x;
+        boatsK.transform.position = new Vector3(posX, posY, boatsK.transform.position.z);
+        boatsK.transform.eulerAngles = new Vector3(0, boatsK.transform.eulerAngles.y, 0);
     }
     void StayOnGround()
     {
@@ -241,7 +250,7 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver, ILevelEndObser
     {
         bool a = true;
         int tempK = k;
-        float repeatTime = 0.15f;
+        float repeatTime = 0.2f;
         CameraManager.Instance.Cam2_Cam3();
         while (a)
         {
