@@ -10,4 +10,5 @@ public class LevelDefinition : ScriptableObject
     [Header("Level Definitions")]
     [Space]
     public GameObject level;
+    public int stairsStepCount;
 }
