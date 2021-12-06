@@ -47,7 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   firstStairTr: {fileID: 6763329701169342119}
   stairPrefab: {fileID: 4170341058612395670, guid: 48b30d2825fb7cd4988e6dbcb834f889, type: 3}
-  stepQuantity: 3
+  stepCount: 0
   lastStep: {fileID: 7820037540185737075}
   confetti0: {fileID: 2690782696319749551}
   confetti1: {fileID: 2690782695991606248}
@@ -3621,15 +3621,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 614631663894939064, guid: 07fe86c0dedd3ee41a78caec39cea1aa, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 18.629997
+      value: 23.9
       objectReference: {fileID: 0}
     - target: {fileID: 614631663894939064, guid: 07fe86c0dedd3ee41a78caec39cea1aa, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -4.47
+      value: -5.79
       objectReference: {fileID: 0}
     - target: {fileID: 614631663894939064, guid: 07fe86c0dedd3ee41a78caec39cea1aa, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 44.97
+      value: 45.52
       objectReference: {fileID: 0}
     - target: {fileID: 614631663894939064, guid: 07fe86c0dedd3ee41a78caec39cea1aa, type: 3}
       propertyPath: m_LocalRotation.w
