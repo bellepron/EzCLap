@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
-public class Player : MonoBehaviour, ILoseObserver, IWinObserver, ILevelEndObserver
+public class Player : MonoBehaviour, ILevelStartObserver, IWinObserver, ILoseObserver, ILevelEndObserver
 {
     public static Player Instance;
 
@@ -13,6 +13,8 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver, ILevelEndObser
 
     public GameObject character;
     [HideInInspector] public Animator characterAnim;
+    Dreamteck.Splines.SplineFollower splineFollower;
+    public float speed;
 
     int k;
 
@@ -23,8 +25,9 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver, ILevelEndObser
 
     void Start()
     {
-        Observers.Instance.Add_LoseObserver(this);
+        Observers.Instance.Add_LevelStartObserver(this);
         Observers.Instance.Add_WinObserver(this);
+        Observers.Instance.Add_LoseObserver(this);
         Observers.Instance.Add_LevelEndObserver(this);
 
         boats.Add(InputHandler.Instance.player.transform.GetChild(0).gameObject);
@@ -36,12 +39,14 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver, ILevelEndObser
         }
 
         characterAnim = character.GetComponent<Animator>();
+
+        splineFollower = FindObjectOfType<Dreamteck.Splines.SplineFollower>();
+        splineFollower.followSpeed = 0;
     }
 
-    void Update()
+    public void LevelStart()
     {
-        // Rotation();
-        // SetPosition();
+        splineFollower.followSpeed = speed;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -53,14 +58,6 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver, ILevelEndObser
         }
     }
 
-    // void SetPosition()
-    // {
-    //     boats[boats.Count - 1].transform.localPosition = transform.position;
-    //     for (int i = 0; i < boats.Count; i++)
-    //     {
-    //         boats[i].transform.localPosition = Vector3.MoveTowards(boats[i].transform.localPosition, pos_s[boats.Count - 1 - i].localPosition, 3 * Time.deltaTime);
-    //     }
-    // }
     Transform playerHolderT;
     void Rotation()
     {
@@ -301,6 +298,8 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver, ILevelEndObser
 
     public void LoseScenario()
     {
+        splineFollower.followSpeed = 0;
+
         character.GetComponent<RagdollToggle>().RagdollActivate(true);
         SoundManager.Instance.Pain();
         Debug.Log("LOSER");
@@ -308,7 +307,7 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver, ILevelEndObser
 
     public void WinScenario()
     {
-
+        splineFollower.followSpeed = 0;
     }
 
     public void LevelEnd()

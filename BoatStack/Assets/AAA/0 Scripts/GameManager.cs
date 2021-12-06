@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
+using Dreamteck.Splines;
 
 public class GameManager : MonoBehaviour, IWinObserver, ILoseObserver, ILevelEndObserver
 {
@@ -20,6 +21,7 @@ public class GameManager : MonoBehaviour, IWinObserver, ILoseObserver, ILevelEnd
     // Level System
     [SerializeField] LevelDefinition[] levels;
     int levelIndex;
+    [SerializeField] SplineFollower splineFollower;
 
     #region Game Start Functions
     void Start()
@@ -32,7 +34,7 @@ public class GameManager : MonoBehaviour, IWinObserver, ILoseObserver, ILevelEnd
     }
     void LevelOperations()
     {
-        // PlayerPrefs.SetInt("level", 0);
+        PlayerPrefs.SetInt("level", 0);
         levelIndex = PlayerPrefs.GetInt("level");
         levelTMP.enabled = true;
         levelTMP.text = "LEVEL " + (levelIndex + 1).ToString();
@@ -43,8 +45,8 @@ public class GameManager : MonoBehaviour, IWinObserver, ILoseObserver, ILevelEnd
     {
         int currentIndex = levelIndex % levels.Length;
         GameObject _level = Instantiate(levels[currentIndex].level, Vector3.zero, Quaternion.identity);
-        Follower.Instance.pathCreator = _level.transform.GetComponentInChildren<PathCreation.PathCreator>();
-        Follower.Instance.speed = levels[currentIndex].speed;
+        splineFollower.spline = _level.transform.GetComponentInChildren<SplineComputer>();
+        Player.Instance.speed = levels[currentIndex].speed;
         InputHandler.Instance.swipeSpeed = levels[currentIndex].swipeSpeed;
 
         LevelEndStairs stairs = _level.transform.GetComponentInChildren<LevelEndStairs>();

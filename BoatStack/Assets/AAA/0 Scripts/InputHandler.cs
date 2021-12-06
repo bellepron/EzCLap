@@ -9,9 +9,7 @@ public class InputHandler : MonoBehaviour, ILevelStartObserver, IWinObserver, IL
 
     [Header("Player Info")]
     public GameObject player;
-    // public Animator anim;
-    // public Rigidbody rb;
-
+    
     [Header("Control")]
     Vector2 firstPressPos;
     Vector2 secondPressPos;
