@@ -7,7 +7,7 @@ public class SoundManager : MonoBehaviour
     public static SoundManager Instance;
 
     [SerializeField] AudioSource audioSource;
-    [SerializeField] AudioClip boatStack, boatExplosion, boatDrop, confetti;
+    [SerializeField] AudioClip boatStack, boatExplosion, boatDrop, confetti, jump, land, diamond, humanPain;
 
     private void Awake()
     {
@@ -32,5 +32,25 @@ public class SoundManager : MonoBehaviour
     public void Confetti()
     {
         audioSource.PlayOneShot(confetti, 1);
+    }
+
+    public void Jump()
+    {
+        audioSource.PlayOneShot(jump, 1);
+    }
+
+    public void Land()
+    {
+        audioSource.PlayOneShot(land, 1);
+    }
+
+    public void Diamond()
+    {
+        audioSource.PlayOneShot(diamond, 0.7f);
+    }
+
+    public void Pain()
+    {
+        audioSource.PlayOneShot(humanPain, 1);
     }
 }
