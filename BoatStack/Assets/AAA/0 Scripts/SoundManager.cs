@@ -16,12 +16,12 @@ public class SoundManager : MonoBehaviour
 
     public void BoatStack()
     {
-        audioSource.PlayOneShot(boatStack, 1);
+        audioSource.PlayOneShot(boatStack, 0.9f);
     }
 
     public void BoatExplosion()
     {
-        audioSource.PlayOneShot(boatExplosion, 1);
+        audioSource.PlayOneShot(boatExplosion, 0.7f);
     }
 
     public void BoatDrop()
@@ -46,7 +46,7 @@ public class SoundManager : MonoBehaviour
 
     public void Diamond()
     {
-        audioSource.PlayOneShot(diamond, 0.7f);
+        audioSource.PlayOneShot(diamond, 0.5f);
     }
 
     public void Pain()
