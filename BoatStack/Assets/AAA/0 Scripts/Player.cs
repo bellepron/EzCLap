@@ -82,6 +82,8 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver, ILevelEndObser
             boats[i].transform.parent = pos_s[i + 1].transform;
         }
 
+        SoundManager.Instance.BoatStack();
+
         boats.Insert(0, go);
         BoingEffect();
 
@@ -135,8 +137,6 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver, ILevelEndObser
                 return;
             }
         }
-
-
     }
     int BoatChildCount()
     {
@@ -148,6 +148,7 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver, ILevelEndObser
 
     void BoatExplode(GameObject go, int childCount)
     {
+        SoundManager.Instance.BoatExplosion();
 
         for (int i = 0; i < childCount; i++)
         {
@@ -166,22 +167,30 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver, ILevelEndObser
     // Jump
     public void Jump()
     {
-        for (int i = 0; i < 14; i++) // pos_s.Count = 14
+        SoundManager.Instance.Jump();
+
+        for (int i = 0; i < pos_s.Count; i++)
         {
             pos_s[i].transform.localPosition += new Vector3(0, 0.1f * i, 0);
         }
         for (int i = 0; i < boats.Count; i++)
         {
-            boats[i].transform.DOLocalMove(pos_s[i].transform.localPosition, 1);
+            boats[i].transform.DOLocalMove(pos_s[i].transform.localPosition, 0.2f);
         }
     }
 
     // Fall&Land
     public void Fall()
     {
+        SoundManager.Instance.Land();
+
+        for (int i = 0; i < pos_s.Count; i++)
+        {
+            pos_s[i].transform.localPosition = pos_sInit[i];
+        }
         for (int i = 0; i < boats.Count; i++)
         {
-            boats[i].transform.DOLocalMove(pos_sInit[i], 1);
+            boats[i].transform.DOLocalMove(Vector3.zero, 0.3f);
         }
     }
 
@@ -197,6 +206,8 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver, ILevelEndObser
         if (k < boats.Count - 1)
         {
             boats[k].transform.parent = null;
+
+            SoundManager.Instance.BoatDrop();
         }
         else if (k == boats.Count - 1)
         {
@@ -205,6 +216,8 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver, ILevelEndObser
             character.transform.eulerAngles = new Vector3(0, 90, 0);
             GetComponent<Rigidbody>().detectCollisions = false;
             DOVirtual.DelayedCall(0.1f, StayOnGround);
+
+            SoundManager.Instance.BoatExplosion();
 
             Observers.Instance.Notify_LevelEndObservers();
         }
@@ -228,6 +241,7 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver, ILevelEndObser
     {
         bool a = true;
         int tempK = k;
+        float repeatTime = 0.15f;
         CameraManager.Instance.Cam2_Cam3();
         while (a)
         {
@@ -261,7 +275,7 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver, ILevelEndObser
                 k++;
             }
 
-            yield return new WaitForSeconds(0.3f);
+            yield return new WaitForSeconds(repeatTime);
         }
     }
 
@@ -280,6 +294,7 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver, ILevelEndObser
     public void LoseScenario()
     {
         character.GetComponent<RagdollToggle>().RagdollActivate(true);
+        SoundManager.Instance.Pain();
         Debug.Log("LOSER");
     }
 
