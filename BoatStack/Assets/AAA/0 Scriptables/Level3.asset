@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ef9a20f8fe517d4db7fbcb7fa521b3a, type: 3}
   m_Name: Level3
   m_EditorClassIdentifier: 
-  speed: 8
+  speed: 12
   swipeSpeed: 11
-  level: {fileID: 2120600632468557510, guid: b9ac8c2d6080bb044b6ea41ea3c54f94, type: 3}
+  level: {fileID: 2898295211645410235, guid: b9ac8c2d6080bb044b6ea41ea3c54f94, type: 3}
   stairsStepCount: 3
