@@ -45,6 +45,10 @@ public class GameManager : MonoBehaviour, IWinObserver, ILoseObserver, ILevelEnd
         Follower.Instance.pathCreator = _level.transform.GetComponentInChildren<PathCreation.PathCreator>();
         Follower.Instance.speed = levels[currentIndex].speed;
         InputHandler.Instance.swipeSpeed = levels[currentIndex].swipeSpeed;
+
+        LevelEndStairs stairs = _level.transform.GetComponentInChildren<LevelEndStairs>();
+        stairs.stepCount = levels[currentIndex].stairsStepCount;
+        stairs.ManuelStart();
     }
     void PreparingPanels()
     {
