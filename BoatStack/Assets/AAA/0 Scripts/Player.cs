@@ -205,13 +205,14 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver, ILevelEndObser
 
         if (k < boats.Count - 1)
         {
-            StartCoroutine(Leave(boats[k]));
+            Leave(boats[k]);
 
             SoundManager.Instance.BoatDrop();
         }
         else if (k == boats.Count - 1)
         {
-            boats[k].transform.parent = null;
+            Leave(boats[k]);
+
             character.transform.parent = null;
             character.transform.eulerAngles = new Vector3(0, 90, 0);
             GetComponent<Rigidbody>().detectCollisions = false;
@@ -223,12 +224,11 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver, ILevelEndObser
         }
         k++;
     }
-    IEnumerator Leave(GameObject boatsK)
+    void Leave(GameObject boatsK)
     {
-        yield return new WaitForSeconds(0.23f);
         boatsK.transform.parent = null;
-        float posY = (PointCalculator.Instance.multiplier - 1) * 0.4f + 0.5f + FindObjectOfType<LevelEndStairs>().transform.position.y;
-        float posX = (PointCalculator.Instance.multiplier - 1) * 3 + 0.43f + FindObjectOfType<LevelEndStairs>().transform.position.x;
+        float posY = (PointCalculator.Instance.multiplier - 2) * 0.4f + 0.5f + FindObjectOfType<LevelEndStairs>().transform.position.y;
+        float posX = (PointCalculator.Instance.multiplier - 2) * 3 + 0.43f + FindObjectOfType<LevelEndStairs>().transform.position.x;
         boatsK.transform.position = new Vector3(posX, posY, boatsK.transform.position.z);
         boatsK.transform.eulerAngles = new Vector3(0, boatsK.transform.eulerAngles.y, 0);
     }
@@ -249,7 +249,6 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver, ILevelEndObser
     IEnumerator WinWithExtraBoat()
     {
         bool a = true;
-        int tempK = k;
         float repeatTime = 0.2f;
         CameraManager.Instance.Cam2_Cam3();
         while (a)
@@ -309,7 +308,7 @@ public class Player : MonoBehaviour, ILoseObserver, IWinObserver, ILevelEndObser
 
     public void WinScenario()
     {
-        Debug.Log("Path End.");
+
     }
 
     public void LevelEnd()
