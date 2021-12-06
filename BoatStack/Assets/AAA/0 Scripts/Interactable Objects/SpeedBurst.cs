@@ -7,7 +7,7 @@ public class SpeedBurst : MonoBehaviour, IInteractable
     // TODO: level scriptableından çek cd'yi ve güçlendirmeyi.
     public void Interact()
     {
-        Follower.Instance.speed *= 4;
+        Follower.Instance.speed += 10;
         StartCoroutine(BackToNormalSpeed());
 
         gameObject.SetActive(false);
@@ -16,6 +16,6 @@ public class SpeedBurst : MonoBehaviour, IInteractable
     IEnumerator BackToNormalSpeed()
     {
         yield return new WaitForSeconds(2);
-        Follower.Instance.speed /= 4;
+        Follower.Instance.speed -= 10;
     }
 }
