@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Level2
   m_EditorClassIdentifier: 
   speed: 14
-  swipeSpeed: 11
+  swipeSpeed: 9.4
   level: {fileID: 3901073236746831220, guid: a58d40c761e610e458a465f3ab7150a0, type: 3}
   stairsStepCount: 30
