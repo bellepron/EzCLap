@@ -9,7 +9,7 @@ public class InputHandler : MonoBehaviour, ILevelStartObserver, IWinObserver, IL
 
     [Header("Player Info")]
     public GameObject player;
-    
+
     [Header("Control")]
     Vector2 firstPressPos;
     Vector2 secondPressPos;
@@ -93,11 +93,15 @@ public class InputHandler : MonoBehaviour, ILevelStartObserver, IWinObserver, IL
 
         if (secondPressPos.x - firstPressPos.x > 0)
             if (angle < bound_Angle)
-                playerHolderT.localEulerAngles += new Vector3(0, 0, swipeSpeed * 10 * Time.deltaTime);
+            {
+                playerHolderT.localEulerAngles += new Vector3(0, 0, swipeSpeed * 9f * Time.deltaTime);
+            }
 
         if (secondPressPos.x - firstPressPos.x < 0)
             if (angle > -bound_Angle)
-                playerHolderT.localEulerAngles += new Vector3(0, 0, swipeSpeed * -10 * Time.deltaTime);
+            {
+                playerHolderT.localEulerAngles += new Vector3(0, 0, swipeSpeed * -9f * Time.deltaTime);
+            }
     }
 
     #endregion
